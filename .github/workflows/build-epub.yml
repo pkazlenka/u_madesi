@@ -27,6 +27,7 @@ jobs:
             --to epub3 \
             --output build/u_madesi.epub \
             --metadata title='Клиника "У Мадеси"' \
+            --metadata author='Pavel Kazlenka' \
             --metadata lang=ru \
             --toc --toc-depth=1 \
             --split-level=1 \
