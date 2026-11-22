@@ -1,0 +1,33 @@
+name: Build EPUB
+
+on:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  epub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create ePub
+        uses: harrymaynard/markdown-to-epub-action@v2
+        with:
+          markdownFiles: |-
+            chapter*.md
+          title: Клиника "У Мадеси"
+          author: ${{ github.repository_owner }}
+          publisher: ${{ github.repository_owner }}
+          lang: ru
+          tocTitle: Оглавление
+          output: u_madesi.epub
+
+      - name: Upload ePub
+        uses: actions/upload-artifact@v4
+        with:
+          name: u-madesi-epub
+          path: u_madesi.epub
+          if-no-files-found: error
