@@ -13,21 +13,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create ePub
-        uses: harrymaynard/markdown-to-epub-action@v2
-        with:
-          markdownFiles: |-
-            chapter*.md
-          title: Клиника "У Мадеси"
-          author: ${{ github.repository_owner }}
-          publisher: ${{ github.repository_owner }}
-          lang: ru
-          tocTitle: Оглавление
-          output: u_madesi.epub
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pandoc
 
-      - name: Upload ePub
+      - name: Build EPUB
+        run: |
+          mkdir -p build
+          # chapterNN.md sort lexicographically, which matches book order
+          pandoc chapter*.md \
+            --from gfm \
+            --to epub3 \
+            --output build/u_madesi.epub \
+            --metadata title='Клиника "У Мадеси"' \
+            --metadata lang=ru \
+            --toc --toc-depth=1 \
+            --split-level=1 \
+            --resource-path=.:technical/media
+
+      - name: Upload EPUB
         uses: actions/upload-artifact@v4
         with:
           name: u-madesi-epub
-          path: u_madesi.epub
+          path: build/u_madesi.epub
           if-no-files-found: error
