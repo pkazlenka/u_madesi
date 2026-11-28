@@ -1,0 +1,47 @@
+name: Build EPUB
+
+on:
+  push:
+    branches:
+      - rus
+      - md-epub
+
+permissions:
+  contents: read
+
+jobs:
+  epub:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends pandoc
+
+      - name: Compute name
+        run: |
+          echo "NAME=Клиника “У Мадеси”-$(date +%y.%m).${{ github.run_number }}.epub" >> "$GITHUB_ENV"
+
+      - name: Build EPUB
+        run: |
+          mkdir -p build
+          pandoc chapter*.md \
+            --from gfm \
+            --to epub3 \
+            --output='build/${{ env.NAME }}' \
+            --metadata title='Клиника "У Мадеси"' \
+            --metadata author='Павел Казленка' \
+            --metadata lang=ru \
+            --toc --toc-depth=1 \
+            --split-level=1 \
+            --resource-path=.:technical/media
+
+      - name: Upload EPUB
+        uses: actions/upload-artifact@v7
+        with:
+          # name: 'Клиника “У Мадеси”-${{ env.VERSION }}.epub'
+          path: build/${{ env.NAME }}
+          if-no-files-found: error
+          archive: false
