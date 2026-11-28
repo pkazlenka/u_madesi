@@ -1,4 +1,4 @@
-# Authors
+# Над этой книгой работали:
 
-* **Pavel Kazlenka** — main author
-* **Anatol Maiegov** — moral support
+* **Павел Казленка** — автор текста
+* **Анатоль Майегов** — GitOps, моральная поддержка

@@ -2,14 +2,16 @@ name: Build EPUB
 
 on:
   push:
-    branches: ['**']
+    branches:
+      - rus
+      - md-epub
 
 permissions:
   contents: read
 
 jobs:
   epub:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v4
 
@@ -18,24 +20,28 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends pandoc
 
+      - name: Compute version
+        run: |
+          echo "VERSION=$(date +%y.%m).${{ github.run_number }}" >> "$GITHUB_ENV"
+
       - name: Build EPUB
         run: |
           mkdir -p build
-          # chapterNN.md sort lexicographically, which matches book order
           pandoc chapter*.md \
             --from gfm \
             --to epub3 \
-            --output build/u_madesi.epub \
+            --output='build/book.epub' \
             --metadata title='Клиника "У Мадеси"' \
-            --metadata author='Pavel Kazlenka' \
+            --metadata author='Павел Казленка' \
             --metadata lang=ru \
             --toc --toc-depth=1 \
             --split-level=1 \
             --resource-path=.:technical/media
 
       - name: Upload EPUB
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: u-madesi-epub
-          path: build/u_madesi.epub
+          name: 'Клиника “У Мадеси”-${{ env.VERSION }}.epub'
+          path: build/book.epub'
           if-no-files-found: error
+          archive: false
