@@ -22,7 +22,7 @@ jobs:
 
       - name: Compute name
         run: |
-          echo "NAME='Клиника “У Мадеси”-$(date +%y.%m).${{ github.run_number }}.epub" >> "$GITHUB_ENV"
+          echo "NAME=Клиника “У Мадеси”-$(date +%y.%m).${{ github.run_number }}.epub" >> "$GITHUB_ENV"
 
       - name: Build EPUB
         run: |
@@ -42,6 +42,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           # name: 'Клиника “У Мадеси”-${{ env.VERSION }}.epub'
-          path: build/${{ env.NAME }}book.epub
+          path: build/${{ env.NAME }}
           if-no-files-found: error
           archive: false
