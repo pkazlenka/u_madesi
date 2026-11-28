@@ -20,9 +20,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends pandoc
 
-      - name: Compute version
+      - name: Compute name
         run: |
-          echo "VERSION=$(date +%y.%m).${{ github.run_number }}" >> "$GITHUB_ENV"
+          echo "NAME='Клиника “У Мадеси”-$(date +%y.%m).${{ github.run_number }}.epub" >> "$GITHUB_ENV"
 
       - name: Build EPUB
         run: |
@@ -30,7 +30,7 @@ jobs:
           pandoc chapter*.md \
             --from gfm \
             --to epub3 \
-            --output='build/book.epub' \
+            --output='build/${{ env.NAME }}' \
             --metadata title='Клиника "У Мадеси"' \
             --metadata author='Павел Казленка' \
             --metadata lang=ru \
@@ -41,7 +41,7 @@ jobs:
       - name: Upload EPUB
         uses: actions/upload-artifact@v7
         with:
-          name: 'Клиника “У Мадеси”-${{ env.VERSION }}.epub'
-          path: build/book.epub'
+          # name: 'Клиника “У Мадеси”-${{ env.VERSION }}.epub'
+          path: build/${{ env.NAME }}book.epub
           if-no-files-found: error
           archive: false
